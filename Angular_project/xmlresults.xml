@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites disabled="0" errors="0" failures="0" tests="9" time="46.637">
+ <testsuite name="Manager" timestamp="2020-06-20T04:46:57" hostname="localhost" time="21.296" errors="0" tests="4" skipped="1" disabled="0" failures="0">
+  <testcase classname="Manager" name="Manager login" time="11.184" />
+  <testcase classname="Manager" name="Add customer" time="4.148" />
+  <testcase classname="Manager" name="Open account" time="5.955" />
+  <testcase classname="Manager" name="Deelet customer" time="0.001">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+ </testsuite>
+ <testsuite name="Customer" timestamp="2020-06-20T04:47:18" hostname="localhost" time="25.341" errors="0" tests="5" skipped="0" disabled="0" failures="0">
+  <testcase classname="Customer" name="Customer Login" time="8.609" />
+  <testcase classname="Customer" name="Select customer" time="2.71" />
+  <testcase classname="Customer" name="Deposit Amount" time="4.853" />
+  <testcase classname="Customer" name="Withdrow Amount" time="3.695" />
+  <testcase classname="Customer" name="Customer logout" time="5.466" />
+ </testsuite>
+</testsuites>

@@ -1,0 +1,43 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1592653617585' stop='1592653638882'>
+    <name>Manager</name>
+    <title>Manager</title>
+    <test-cases>
+        <test-case start='1592653617586' status='passed' stop='1592653628773'>
+            <name>Manager login</name>
+            <title>Manager login</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653628773' status='passed' stop='1592653632922'>
+            <name>Add customer</name>
+            <title>Add customer</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653632922' status='passed' stop='1592653638878'>
+            <name>Open account</name>
+            <title>Open account</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653638878' status='pending' stop='1592653638880'>
+            <name>Deelet customer</name>
+            <title>Deelet customer</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+            <failure>
+                <message>Temporarily disabled with xit</message>
+                <stack-trace></stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

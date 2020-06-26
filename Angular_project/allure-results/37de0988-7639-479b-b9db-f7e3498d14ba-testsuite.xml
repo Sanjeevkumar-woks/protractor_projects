@@ -1,0 +1,47 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1592653638894' stop='1592653664235'>
+    <name>Customer</name>
+    <title>Customer</title>
+    <test-cases>
+        <test-case start='1592653638894' status='passed' stop='1592653647506'>
+            <name>Customer Login</name>
+            <title>Customer Login</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653647507' status='passed' stop='1592653650216'>
+            <name>Select customer</name>
+            <title>Select customer</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653650216' status='passed' stop='1592653655069'>
+            <name>Deposit Amount</name>
+            <title>Deposit Amount</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653655069' status='passed' stop='1592653658764'>
+            <name>Withdrow Amount</name>
+            <title>Withdrow Amount</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1592653658765' status='passed' stop='1592653664232'>
+            <name>Customer logout</name>
+            <title>Customer logout</title>
+            <labels/>
+            <parameters/>
+            <steps/>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>
