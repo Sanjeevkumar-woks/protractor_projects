@@ -1,0 +1,58 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/readingJsonFile.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  }
+};
+
+--------------------------------------------------------------------
+
+readingJsonFile.json:
+------------------
+{
+    "credentials1":{
+        "username":"sanjeev",
+        "password":"Hello"
+    },
+
+    "credentials2":{
+        "username":"sanjeev9",
+        "password":"Hello9"
+    },
+
+    "credentials3":{
+        "username":"sanjeev99",
+        "password":"Hello99"   
+    }
+}
+
+---------------------------------------------------------------
+readingJsonFile.js:
+------------------
+
+let jsonFile=require("../jsondata/jsonData.json");
+
+describe("HandlingTheRequiredLoginData",function(){
+    it("testtherequiredlogindata",function(){
+        console.log(jsonFile.credentials1.username,jsonFile.credentials1.password);
+        console.log(jsonFile.credentials2.username,jsonFile.credentials2.password);
+        console.log(jsonFile.credentials3.username,jsonFile.credentials3.password);
+    })
+})

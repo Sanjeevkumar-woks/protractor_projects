@@ -1,0 +1,38 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/handleScreenshot.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  }
+};
+
+spec.js:
+-------
+var fs=require('fs');
+describe("Handle screenshot by using protractor",function(){
+    it("test to take the screenshot",function(){
+        browser.waitForAngularEnabled(false);
+        browser.get("https://www.globalsqa.com/");
+        browser.takeScreenshot().then(function(fullPage){
+            var stream=fs.createWriteStream("fullPage.png");
+            stream.write(new Buffer(fullPage,"base64"));
+            stream.end();
+        }); 
+    }); 
+}); 

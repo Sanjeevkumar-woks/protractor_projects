@@ -1,0 +1,40 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/autoComplete.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  }
+};
+
+spec.js:
+-------
+describe("Handling AutoComplete",function(){
+    it("test autocomplete",function(){
+        browser.get("https://material.angularjs.org/latest/demo/autocomplete");
+        element(by.model("$mdAutocompleteCtrl.scope.searchText")).sendKeys("al");
+        browser.sleep(5000);
+        element.all(by.css(".md-autocomplete-suggestions li")).then(function(items){
+            console.log(items.length);
+            console.log(items[1].getText());
+            expect(items[1].getText()).toBe("Alaska");
+            items[1].click();
+            browser.sleep(5000);
+        })
+    })
+})

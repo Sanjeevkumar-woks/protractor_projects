@@ -1,0 +1,73 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+    directConnect: true,
+  
+    // Capabilities to be passed to the webdriver instance.
+    capabilities: {
+      'browserName': 'chrome'
+    },
+  
+    // Framework to use. Jasmine is recommended.
+    framework: 'jasmine',
+  
+    // Spec patterns are relative to the current working directory when
+    // protractor is called.
+    specs: ['../test/spec.js'],
+  
+    // Options to be passed to Jasmine.
+    jasmineNodeOpts: {
+      defaultTimeoutInterval: 30000
+    }
+  };
+  
+------------------------------------------------------------------
+
+pageobject.js:
+-------------
+let xldat=require("xlsx");
+
+class XLManipulator
+{
+    readDataFromTheExcelSheet(sheetName,filePath)
+    {
+        let wbook=xldat.readFile(filePath);
+        let sheet=wbook.Sheets[sheetName];
+        return xldat.utils.sheet_to_json(sheet);
+    }
+
+}
+
+module.exports=new XLManipulator();
+
+---------------------------------------------------------------
+
+spec.js:
+-------
+
+let excelManipulator=require("../pageobject/pageobject");
+let excelData=require("exceljs");
+describe("HandlingTheExcelManipulationProtractor",function(){
+    it("test1",function(){
+        //creating the new excel workbook 
+        let wbook=new excelData.Workbook();
+        //creating the new excel sheet
+        let sheet=wbook.addWorksheet("Sheet1");
+        //creating the new excel headers
+        sheet.columns=[
+            {header:"UserName", key:"userName"},
+            {header:"Password", key:"password"}
+        ];
+        //calling the function to read the data from excel file and it returns the json file
+        let testJsonData=excelManipulator.readDataFromTheExcelSheet("Sheet1","C:/Users/USER/Desktop/loginData/loginToExcelData.xlsx");
+        //looping through the json file
+        testJsonData.forEach(function(jsonData){
+          console.log(jsonData.UserName,jsonData.Password)  
+          //adding the rows to excelfile  
+          sheet.addRow({userName: jsonData.UserName, password: jsonData.Password});
+          //writing the data to the excelfile
+          wbook.xlsx.writeFile("C:/Users/USER/Desktop/writeloginFile.xlsx");  
+        })
+    }) 
+})

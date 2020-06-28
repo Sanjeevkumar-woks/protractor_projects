@@ -1,0 +1,39 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/spec.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  }
+};
+
+spec.js:
+-------
+describe("Handling Scrolling Demo Using Protractor",function(){
+    it("test scrolling data using protractor",function(){
+        browser.waitForAngularEnabled(false);
+        browser.get("https://www.google.com/");
+        element(by.name("q")).sendKeys("Udemy");
+        browser.sleep(5000);
+        element(by.name("btnK")).click();
+        browser.sleep(5000);
+            browser.executeScript('window.scrollTo(0,2000);').then(function (){
+                browser.sleep(5000);
+            })
+    }) 
+})

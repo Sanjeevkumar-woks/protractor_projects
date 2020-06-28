@@ -1,0 +1,170 @@
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/pomtest.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  },
+
+  onPrepare: function () {
+    var jasmineReporters = require('jasmine-reporters');
+    jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
+      consolidateAll: true,
+      savePath: './',
+      filePrefix: 'xmlresults'
+    }));
+    var fs = require('fs-extra');
+
+    fs.emptyDir('screenshots/', function (err) {
+      console.log(err);
+    });
+
+    jasmine.getEnv().addReporter({
+      specDone: function (result) {
+        if (result.status == 'failed') {
+          browser.getCapabilities().then(function (caps) {
+            var browserName = caps.get('browserName');
+
+            browser.takeScreenshot().then(function (png) {
+              var stream = fs.createWriteStream('screenshots/' + browserName + '-' + result.fullName + '.png');
+              stream.write(new Buffer(png, 'base64'));
+              stream.end();
+            });
+          });
+        }
+      }
+    });
+  },
+
+  //HTMLReport called once tests are finished
+  onComplete: function () {
+    var browserName, browserVersion;
+    var capsPromise = browser.getCapabilities();
+
+    capsPromise.then(function (caps) {
+      browserName = caps.get('browserName');
+      browserVersion = caps.get('version');
+      platform = caps.get('platform');
+
+      var HTMLReport = require('protractor-html-reporter-2');
+
+      testConfig = {
+        reportTitle: 'Protractor Test Execution Report',
+        outputPath: './',
+        outputFilename: 'ProtractorTestReport',
+        screenshotPath: './screenshots',
+        testBrowser: browserName,
+        browserVersion: browserVersion,
+        modifiedSuiteName: false,
+        screenshotsOnlyOnFailure: true,
+        testPlatform: platform
+      };
+      new HTMLReport().from('xmlresults.xml', testConfig);
+    });
+  }
+};
+
+--------------------------------------------------------------------
+
+student.js:
+----------
+
+let studentpage=function()
+{
+    let studentName=element(by.name("name"));
+    let contactNumber=element(by.name("contact"));
+    let subject=element(by.name("subject"));
+    let marksElement=element(by.name("marks"));
+    let submitButton=element(by.css("input[value=Submit]"));
+
+    this.get=function(url)
+    {
+        browser.get(url); 
+    }
+
+    this.setStudentName=function(name)
+    {
+        studentName.sendKeys(name);
+    }
+
+    this.setContactNumber=function(number)
+    {
+        contactNumber.sendKeys(number);
+    }
+
+    this.setSubject=function(subjectName)
+    {
+        subject.element(by.xpath("//option[contains(text(),'"+subjectName+"')]")).click();
+    }
+
+    this.setMarks=function(marks)
+    {
+        marksElement.sendKeys(marks);
+    }
+
+    this.clickButton=function()
+    {
+        submitButton.click();
+    }
+
+    this.verifyResults=function(nameData,contactData,subjectData,marksData)
+    {
+        let list=element.all(by.tagName("tr"));
+        expect(list.get(0).element(by.xpath("//td[2]")).getText()).toBe(nameData)
+        expect(list.get(0).element(by.xpath("//td[3]")).getText()).toBe(contactData)
+        expect(list.get(0).element(by.xpath("//td[4]")).getText()).toBe(subjectData)
+        expect(list.get(0).element(by.xpath("//td[5]")).getText()).toBe(marksData)
+
+    }
+
+};
+
+module.exports=new studentpage();
+
+---------------------------------------------------------------
+
+pomtest.js:
+----------
+
+let studentpage=require('../pageobjects/student')
+
+describe("PageObjectModel Testing Data",function(){
+    it("StudentDataTesting",function(){
+        studentpage.get("https://www.trycatchclasses.com/code/demo/angular4_crud/");
+        studentpage.setStudentName("tarak");
+        studentpage.setContactNumber("9790270846");
+        studentpage.setSubject("Angular");
+        studentpage.setMarks("90.0");
+        studentpage.clickButton();
+        browser.sleep(5000); 
+        studentpage.verifyResults("tarak","9790270846","Angular","90.0");
+        browser.sleep(5000);
+    }); 
+    it("StudentDataTesting2",function(){
+        //invalid url given to test
+        studentpage.get("https://www.trycatchclasses.com/code/demo/angular4_crud9/");
+        studentpage.setStudentName("tarak");
+        studentpage.setContactNumber("9790270846");
+        studentpage.setSubject("Angular");
+        studentpage.setMarks("90.0");
+        studentpage.clickButton();
+        browser.sleep(5000); 
+        studentpage.verifyResults("tarak","9790270846","Angular","90.0");
+        browser.sleep(5000);
+    }); 
+});
