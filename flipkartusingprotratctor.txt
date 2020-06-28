@@ -1,0 +1,199 @@
+protractor------------>npm install protractor
+
+GettheJasminetypes----------->npm install --save-dev @types/jasmine
+
+HTMLReports---------->npm i protractor-html-reporter-2
+
+TakingScreenShots---------->npm i fs-extra
+
+JasmineReports---------->npm i jasmine-reporters
+
+conf.js:
+-------
+// An example configuration file.
+exports.config = {
+  directConnect: true,
+
+  // Capabilities to be passed to the webdriver instance.
+  capabilities: {
+    'browserName': 'chrome'
+  },
+
+  // Framework to use. Jasmine is recommended.
+  framework: 'jasmine',
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
+  specs: ['../tests/spec.js'],
+
+  // Options to be passed to Jasmine.
+  jasmineNodeOpts: {
+    defaultTimeoutInterval: 30000
+  },
+
+  onPrepare: function () {
+    var jasmineReporters = require('jasmine-reporters');
+    jasmine.getEnv().addReporter(new jasmineReporters.JUnitXmlReporter({
+      consolidateAll: true,
+      savePath: './',
+      filePrefix: 'xmlresults'
+    }));
+    var fs = require('fs-extra');
+
+    fs.emptyDir('screenshots/', function (err) {
+      console.log(err);
+    });
+
+    jasmine.getEnv().addReporter({
+      specDone: function (result) {
+        if (result.status == 'failed') {
+          browser.getCapabilities().then(function (caps) {
+            var browserName = caps.get('browserName');
+
+            browser.takeScreenshot().then(function (png) {
+              var stream = fs.createWriteStream('screenshots/' + browserName + '-' + result.fullName + '.png');
+              stream.write(new Buffer(png, 'base64'));
+              stream.end();
+            });
+          });
+        }
+      }
+    });
+  },
+
+  //HTMLReport called once tests are finished
+  onComplete: function () {
+    var browserName, browserVersion;
+    var capsPromise = browser.getCapabilities();
+
+    capsPromise.then(function (caps) {
+      browserName = caps.get('browserName');
+      browserVersion = caps.get('version');
+      platform = caps.get('platform');
+
+      var HTMLReport = require('protractor-html-reporter-2');
+
+      testConfig = {
+        reportTitle: 'Protractor Test Execution Report',
+        outputPath: './',
+        outputFilename: 'ProtractorTestReport',
+        screenshotPath: './screenshots',
+        testBrowser: browserName,
+        browserVersion: browserVersion,
+        modifiedSuiteName: false,
+        screenshotsOnlyOnFailure: true,
+        testPlatform: platform
+      };
+      new HTMLReport().from('xmlresults.xml', testConfig);
+    });
+  }
+};
+
+pageobject.js:
+-------------
+let protractor_reference=require("protractor");
+var fs=require('fs');
+const { keys } = require("lodash");
+let flipkartfunction=function()
+{
+    let userIdElement=protractor_reference.element(protractor_reference.by.className("_2zrpKA _1dBPDZ"));
+    let passwordElement=protractor_reference.element(protractor_reference.by.className("_2zrpKA _3v41xv _1dBPDZ"));
+    let loginButtonElement=protractor_reference.element(protractor_reference.by.className("_2AkmmA _1LctnI _7UHT_c"));
+    let searchBarElement=protractor_reference.element(protractor_reference.by.className("LM6RPg"));
+    //let submitSearchElement=protractor_reference.element(protractor_reference.by.xpath("//*[@id='container']/div/div[1]/div[1]/div[2]/div[2]/form/div/button"));
+    let selectMobileElement=protractor_reference.element(protractor_reference.by.xpath("//*[@id='container']/div/div[3]/div[2]/div[1]/div[2]/div[2]/div/div/div/a"));
+
+    this.getUrl=function(passUrl)
+    {
+        protractor_reference.browser.get(passUrl);
+    }
+
+    this.setUserId=function(userName)
+    {
+        userIdElement.clear();
+        userIdElement.sendKeys(userName);
+    }
+
+    this.setPassword=function(password)
+    {
+        passwordElement.clear();
+        passwordElement.sendKeys(password);
+    }
+
+    this.clickOnLoginButton=function()
+    {
+        loginButtonElement.click();
+    }
+
+    this.setSearchBar=function(textToBeSearched)
+    {
+        searchBarElement.sendKeys(textToBeSearched);
+    }
+
+    this.submitSearch=function()
+    {
+        searchBarElement.submit();
+    }
+
+    this.selectTheMobile=function()
+    {
+        selectMobileElement.click();
+    }
+
+    this.takeScreenShotOfMobile=function()
+    {
+        protractor_reference.browser.takeScreenshot().then(function(fullPage){
+        var stream=fs.createWriteStream("fullPage.png");
+        stream.write(new Buffer(fullPage,"base64"));
+        stream.end();
+        });
+    }
+}
+
+module.exports=new flipkartfunction();
+
+spec.js:
+-------
+let flipkartfunction = require("../pageobjects/pageobject");
+let excelData = require("xlsx");
+let { browser } = require("protractor");
+describe("Login", function () {
+    browser.waitForAngularEnabled(false);
+    flipkartfunction.getUrl("https://www.flipkart.com/");
+    let book=excelData.readFile("G:/selenium_htc/flipkartloginprotractor.xlsx");
+    let sheet=book.Sheets["Sheet1"];
+    let jsonFile=excelData.utils.sheet_to_json(sheet);
+    it("testlogin",function(){
+        jsonFile.forEach(function(jsonData){
+            let userId=jsonData.UserName;
+            let password=jsonData.Password;
+            flipkartfunction.setUserId(userId);
+            flipkartfunction.setPassword(password);
+            flipkartfunction.clickOnLoginButton();
+            console.log(userId,password);
+            browser.sleep(3000);
+            flipkartfunction.setSearchBar("moto g8 plus");
+            flipkartfunction.submitSearch();
+            browser.sleep(3000);
+            flipkartfunction.selectTheMobile();
+            browser.sleep(3000);
+            //return the current session guid
+            browser.getWindowHandle().then(function(parentId){
+                console.log(parentId);
+                //returns all the guids(parent+child)
+                browser.getAllWindowHandles().then(function(allIds){
+                    for (let guid of allIds)
+                    {
+                        if(guid!=parentId)
+                        {
+                            browser.switchTo().window(guid);
+                            break;
+                        }    
+                    }
+                })  
+            })
+            browser.sleep(3000);
+            flipkartfunction.takeScreenShotOfMobile();
+        })
+    })
+})    
